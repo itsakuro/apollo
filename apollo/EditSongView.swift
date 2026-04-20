@@ -6,18 +6,23 @@
 //
 
 import SwiftUI
-import PhotosUI
 
 struct EditSongView: View {
     @Environment(\.dismiss) private var dismiss
     
+    enum SongField {
+        case title, artists
+    }
+    
+    @FocusState private var focusedField: SongField?
+    
     @State private var songTitle: String = ""
     @State private var songArtists: String = ""
     
-    @FocusState private var focusedSongTitle: Bool
-    @State private var editingSongTitle: Bool = false
-    @FocusState private var focusedSongArtists: Bool
-    @State private var editingSongArtists: Bool = false
+//    @FocusState private var focusedSongTitle: Bool
+//    @State private var editingSongTitle: Bool = false
+//    @FocusState private var focusedSongArtists: Bool
+//    @State private var editingSongArtists: Bool = false
     
     @State private var songIsExplicit: Bool = false
     @State private var explicitTagWidth: CGFloat = .zero
@@ -43,11 +48,11 @@ struct EditSongView: View {
                                     Text(!songTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? songTitle : "Title")
                                         .foregroundStyle(!songTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ? .primary : .tertiary)
                                         .onTapGesture {
-                                            focusedSongTitle = true
+                                            focusedField = .title
                                         }
-                                        .scaleEffect(!editingSongTitle ? 1 : 0.8)
-                                        .blur(radius: !editingSongTitle ? 0 : 4)
-                                        .opacity(!editingSongTitle ? 1 : 0)
+                                        .scaleEffect(focusedField != .title ? 1 : 0.8)
+                                        .blur(radius: focusedField != .title ? 0 : 4)
+                                        .opacity(focusedField != .title ? 1 : 0)
                                     
                                     Image(systemName: "e.square.fill")
                                         .foregroundStyle(.secondary)
@@ -60,9 +65,9 @@ struct EditSongView: View {
                                             }
                                         )
                                         .frame(width: songIsExplicit ? explicitTagWidth : 0, alignment: .trailing)
-                                        .scaleEffect(!editingSongTitle ? 1 : 0.8)
-                                        .blur(radius: !editingSongTitle ? 0 : 4)
-                                        .opacity(!editingSongTitle ? 1 : 0)
+                                        .scaleEffect(focusedField != .title ? 1 : 0.8)
+                                        .blur(radius: focusedField != .title ? 0 : 4)
+                                        .opacity(focusedField != .title ? 1 : 0)
                                         .scaleEffect(songIsExplicit ? 1 : 0.8)
                                         .blur(radius: songIsExplicit ? 0 : 4)
                                         .opacity(songIsExplicit ? 1 : 0)
@@ -71,15 +76,10 @@ struct EditSongView: View {
                                 
                                 TextField("", text: $songTitle, prompt: Text("Title"))
                                     .multilineTextAlignment(.center)
-                                    .focused($focusedSongTitle)
-                                    .onChange(of: focusedSongTitle) { oldValue, newValue in
-                                        withAnimation(.snappy(duration: 0.2)) {
-                                            editingSongTitle = newValue
-                                        }
-                                    }
-                                    .scaleEffect(editingSongTitle ? 1 : 0.8)
-                                    .blur(radius: editingSongTitle ? 0 : 4)
-                                    .opacity(editingSongTitle ? 1 : 0)
+                                    .focused($focusedField, equals: .title)
+                                    .scaleEffect(focusedField == .title ? 1 : 0.8)
+                                    .blur(radius: focusedField == .title ? 0 : 4)
+                                    .opacity(focusedField == .title ? 1 : 0)
                             }
                             .font(.title)
                             .fontWeight(.bold)
@@ -88,7 +88,7 @@ struct EditSongView: View {
                             ZStack {
                                 Button {
                                     withAnimation(.snappy(duration: 0.2)) {
-                                        focusedSongArtists = true
+                                        focusedField = .artists
                                     }
                                 } label: {
                                     HStack(spacing: 4) {
@@ -105,34 +105,21 @@ struct EditSongView: View {
                                     .padding(.vertical, 4.5)
                                     .background(.fill.tertiary)
                                     .clipShape(.rect(cornerRadius: 8))
-                                    //                            .background(
-                                    //                                GeometryReader { geometry in
-                                    //                                    Color.red
-                                    //                                        .onAppear {
-                                    //                                            print(geometry.size.height)
-                                    //                                        }
-                                    //                                }
-                                    //                            )
                                 }
                                 .buttonStyle(.plain)
-                                .scaleEffect(!editingSongArtists ? 1 : 0.8)
-                                .blur(radius: !editingSongArtists ? 0 : 4)
-                                .opacity(!editingSongArtists ? 1 : 0)
+                                .scaleEffect(focusedField != .artists ? 1 : 0.8)
+                                .blur(radius: focusedField != .artists ? 0 : 4)
+                                .opacity(focusedField != .artists ? 1 : 0)
                                 
                                 TextField("", text: $songArtists, prompt: Text("Artists"))
                                     .font(.title2)
                                     .fontWeight(.medium)
                                     .fontDesign(.rounded)
                                     .multilineTextAlignment(.center)
-                                    .focused($focusedSongArtists)
-                                    .onChange(of: focusedSongArtists) { oldValue, newValue in
-                                        withAnimation(.snappy(duration: 0.2)) {
-                                            editingSongArtists = newValue
-                                        }
-                                    }
-                                    .scaleEffect(editingSongArtists ? 1 : 0.8)
-                                    .blur(radius: editingSongArtists ? 0 : 4)
-                                    .opacity(editingSongArtists ? 1 : 0)
+                                    .focused($focusedField, equals: .artists)
+                                    .scaleEffect(focusedField == .artists ? 1 : 0.8)
+                                    .blur(radius: focusedField == .artists ? 0 : 4)
+                                    .opacity(focusedField == .artists ? 1 : 0)
                             }
                         }
                     }
