@@ -10,10 +10,6 @@ import SwiftUI
 struct EditSongView: View {
     @Environment(\.dismiss) private var dismiss
     
-    enum SongField {
-        case title, artists
-    }
-    
     @FocusState private var focusedField: SongField?
     
     @State private var songTitle: String = ""
