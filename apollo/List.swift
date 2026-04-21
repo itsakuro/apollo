@@ -15,13 +15,13 @@ struct ListRow<Content: View>: View {
     } 
 
     var body: some View {
-        VStack(spacing: 1) {
-            HStack(spacing: 4) {
-                content
-                    .frame(height: 54)
-                    .background(.fill.quaternary)
-            }
+        HStack(spacing: 6) {
+            content
         }
+        .padding(.horizontal)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .frame(height: 54)
+        .background(Color.Lists.foreground)
     }
 }
 
@@ -36,8 +36,7 @@ struct ListHeader: View {
         header
             .font(.subheadline)
             .fontWeight(.semibold)
-            .fontDesign(.rounded)
-            .foregroundStyle(Color.Label.secondary)
+            .foregroundStyle(Color.Labels.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
     }
@@ -50,12 +49,12 @@ struct ListFooter: View {
         self.footer = footer
     }
 
-    var body: someView {
+    var body: some View {
         footer
             .font(.footnote)
             .fontWeight(.medium)
             .fontDesign(.rounded)
-            .foregroundStyle(Color.Label.secondary)
+            .foregroundStyle(Color.Labels.secondary)
             .frame(maxWidth: .infinity, alignment: .leading)
             .padding(.horizontal)
     }
