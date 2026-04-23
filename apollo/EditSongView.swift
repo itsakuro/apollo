@@ -76,6 +76,11 @@ struct EditSongView: View {
                                     .scaleEffect(focusedField == .title ? 1 : 0.8)
                                     .blur(radius: focusedField == .title ? 0 : 4)
                                     .opacity(focusedField == .title ? 1 : 0)
+                                    .onChange(of: songTitle) { oldValue, newValue in
+                                        Task {
+                                            try await searchGenius(newValue)
+                                        }
+                                    }
                             }
                             .font(.title)
                             .fontWeight(.bold)
@@ -162,6 +167,26 @@ struct EditSongView: View {
             .toolbarTitleDisplayMode(.inline)
             .transition(.offset(x: -100).combined(with: .opacity).animation(.snappy(duration: 0.2)))
         }
+    }
+}
+
+func searchGenius(_ query: String) async throws {
+    guard let url = URL(string: "https://api.genius.com/search?q=\(query)") else { return }
+    
+    var request = URLRequest(url: url)
+    request.httpMethod = "GET"
+    
+    request.setValue("Bearer \(Secrets.geniusClientID)", forHTTPHeaderField: "Authorization")
+    
+    do {
+        let (data, _) = try await URLSession.shared.data(for: request)
+        
+        if let jsonString = String(data: data, encoding: .utf8) {
+            print(jsonString)
+            print("-------")
+        }
+    } catch {
+        print("Error: \(error)")
     }
 }
 

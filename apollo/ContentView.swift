@@ -41,15 +41,22 @@ enum CreditRole {
     case performer, songwriter, producer, feature
 }
 
+enum Tabs: Equatable, Hashable {
+    case library, search
+}
+
 struct ContentView: View {
+    @State private var selectedTab: Tabs = .library
+    
     var body: some View {
-        VStack {
-            Image(systemName: "globe")
-                .imageScale(.large)
-                .foregroundStyle(.tint)
-            Text("Hello, world!")
+        TabView(selection: $selectedTab) {
+            Tab("Library", systemImage: "square.grid.2x2", value: .library) {
+                LibraryTabView()
+            }
+            Tab("Search", systemImage: "magnifyingglass", value: .search, role: .search) {
+                Text("Search tab")
+            }
         }
-        .padding()
     }
 }
 
