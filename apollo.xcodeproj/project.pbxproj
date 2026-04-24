@@ -10,9 +10,22 @@
 		6AE65C5A2F94013B00DB1C24 /* apollo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = apollo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		6A93EFBD2F9ADF2C00E18E43 /* Exceptions for "apollo" folder in "apollo" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				Info.plist,
+			);
+			target = 6AE65C592F94013B00DB1C24 /* apollo */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		6AE65C5C2F94013B00DB1C24 /* apollo */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				6A93EFBD2F9ADF2C00E18E43 /* Exceptions for "apollo" folder in "apollo" target */,
+			);
 			path = apollo;
 			sourceTree = "<group>";
 		};
@@ -257,6 +270,7 @@
 				DEVELOPMENT_TEAM = 84P52R82X6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = apollo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Apollo;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
@@ -291,6 +305,7 @@
 				DEVELOPMENT_TEAM = 84P52R82X6;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = apollo/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Apollo;
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;

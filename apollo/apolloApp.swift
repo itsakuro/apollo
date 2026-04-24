@@ -11,8 +11,8 @@ import SwiftUI
 struct apolloApp: App {
     var body: some Scene {
         WindowGroup {
-            AddSongView()
-//            ContentView()
+//            AddSongView()
+            ContentView()
         }
     }
 }

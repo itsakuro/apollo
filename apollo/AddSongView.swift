@@ -30,6 +30,7 @@ struct AddSongView: View {
     @State private var isFilePickerShowing: Bool = false
     @State private var isFindingMetadata: Bool = false
     @State private var foundMetadata: SongMetadata? = nil
+    @State private var savedDestination: URL? = nil
     
     // Details
     
@@ -217,10 +218,12 @@ struct AddSongView: View {
                 
                 ToolbarItem(placement: .confirmationAction) {
                     Button {
+                        saveSong()
                         dismiss()
                     } label: {
                         Label("Save changes", systemImage: "checkmark")
                     }
+                    .disabled(songTitle.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
                 }
             }
             .toolbarTitleDisplayMode(.inline)
@@ -241,6 +244,8 @@ struct AddSongView: View {
                 print("Failed to copy file")
                 return
             }
+            
+            savedDestination = destination
             
             let metadata = await extractMetadata(from: destination)
             
@@ -320,6 +325,28 @@ struct AddSongView: View {
         
         metadata.title = name
         return metadata
+    }
+    
+    func saveSong() {
+        guard let destination = savedDestination else { return }
+        
+        let bookmark = try? destination.bookmarkData(
+            options: .minimalBookmark,
+            includingResourceValuesForKeys: nil,
+            relativeTo: nil
+        )
+        
+        let song = Song(
+            title: songTitle.trimmingCharacters(in: .whitespacesAndNewlines),
+            artists: songArtists.split(separator: "; ").map {
+                $0.trimmingCharacters(in: .whitespaces)
+            }.filter { !$0.isEmpty },
+            isExplicit: songIsExplicit,
+            artworkData: foundMetadata?.artworkData,
+            fileBookmark: bookmark
+        )
+        
+        LibraryStore.shared.add(song)
     }
 }
 

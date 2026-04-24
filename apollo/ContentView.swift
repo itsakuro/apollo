@@ -7,16 +7,44 @@
 
 import SwiftUI
 
+@Observable
+class LibraryStore {
+    static let shared = LibraryStore()
+    var songs: [Song] = []
+    
+    func add(_ song: Song) {
+        songs.append(song)
+    }
+}
+
 struct Song: Identifiable {
     let id: UUID = UUID()
     var title: String
     var artists: [String]
     var isExplicit: Bool = false
-    var artwork: Image? = nil
+    var artworkData: Data? = nil
     var lyrics: String? = nil
     var trackNumber: Int? = nil
     var credits: [Credit] = []
     var projectID: UUID? = nil // foreign key
+    var fileBookmark: Data? = nil
+    
+    var fileURL: URL? {
+        guard let bookmark = fileBookmark else { return nil }
+        var stale = false
+        return try? URL(
+            resolvingBookmarkData: bookmark,
+            bookmarkDataIsStale: &stale
+        )
+    }
+    
+    init(title: String, artists: [String], isExplicit: Bool = false, artworkData: Data? = nil, fileBookmark: Data? = nil) {
+        self.title = title
+        self.artists = artists
+        self.isExplicit = isExplicit
+        self.artworkData = artworkData
+        self.fileBookmark = fileBookmark
+    }
 }
 
 struct Project: Identifiable {
