@@ -55,6 +55,7 @@ class PlaybackManager {
         Task {
             if let seconds = try? await item.asset.load(.duration) {
                 duration = seconds.seconds
+                updateNowPlayingInfo()
             }
         }
         
@@ -125,10 +126,30 @@ class PlaybackManager {
         MPNowPlayingInfoCenter.default().nowPlayingInfo = info
     }
     
+    func backward() {
+        if currentTime > 3 {
+            seek(to: 0)
+        }
+    }
+    
+    func forward() {
+        print("Okay")
+    }
+    
     // REMOTE CONTROLS
     
     private func setupRemoteControls() {
         let center = MPRemoteCommandCenter.shared()
+        
+        center.previousTrackCommand.addTarget { [weak self] _ in
+            self?.backward()
+            return .success
+        }
+        
+        center.nextTrackCommand.addTarget { [weak self] _ in
+            self?.forward()
+            return .success
+        }
         
         center.playCommand.addTarget { [weak self] _ in
             self?.playPause()

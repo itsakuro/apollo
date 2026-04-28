@@ -56,8 +56,16 @@ struct LibraryTabView: View {
                                     .clipShape(.rect(cornerRadius: 6))
                                     
                                     VStack(alignment: .leading, spacing: 0) {
-                                        Text(song.title)
-                                            .fontWeight(.bold)
+                                        HStack(spacing: 3) {
+                                            Text(song.title)
+                                            
+                                            if song.isExplicit {
+                                                Image(systemName: "e.square.fill")
+                                                    .foregroundStyle(Color.Labels.secondary)
+                                            }
+                                        }
+                                        .fontWeight(.bold)
+                                        
                                         Text(song.artists.joined(separator: "; "))
                                             .foregroundStyle(Color.Labels.secondary)
                                     }

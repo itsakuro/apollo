@@ -15,6 +15,10 @@ struct EditSongView: View {
     @State private var songTitle: String = ""
     @State private var songArtists: String = ""
     
+    @State private var geniusSong: GeniusSong?
+    @State private var fetchingGeniusSong: Bool = false
+    @State private var initialFetch: Bool = false
+    
 //    @FocusState private var focusedSongTitle: Bool
 //    @State private var editingSongTitle: Bool = false
 //    @FocusState private var focusedSongArtists: Bool
@@ -81,6 +85,29 @@ struct EditSongView: View {
                                             try await searchGenius(newValue)
                                         }
                                     }
+                                    .onSubmit {
+                                        geniusSong = nil
+                                        
+                                        withAnimation(.smooth(duration: 0.4)) {
+                                            initialFetch = true
+                                            fetchingGeniusSong = true
+                                        }
+                                        
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
+                                            Task {
+                                                do {
+                                                    geniusSong = try await fetchGeniusSong(11487113)
+                                                    
+                                                    withAnimation(.spring(duration: 0.4, bounce: 0.6)) {
+                                                        fetchingGeniusSong = false
+                                                    }
+                                                } catch {
+                                                    print("couldn’t fetch song data from Genius : \(error)")
+                                                    fetchingGeniusSong = false
+                                                }
+                                            }
+                                        }
+                                    }
                             }
                             .font(.title)
                             .fontWeight(.bold)
@@ -125,6 +152,49 @@ struct EditSongView: View {
                         }
                     }
                     
+                    if initialFetch {
+                        ZStack {
+                            if fetchingGeniusSong {
+                                HStack(spacing: 4) {
+                                    ProgressView()
+                                    
+                                    Text("Fetching from Genius...")
+                                        .foregroundStyle(Color.Labels.secondary)
+                                }
+                                .transition(
+                                    .scale(scale: 0.8)
+                                    .combined(with: .opacity)
+                                )
+                            } else if geniusSong != nil {
+                                VStack {
+                                    HStack(spacing: 12) {
+                                        VStack(alignment: .leading, spacing: 4) {
+                                            VStack(alignment: .leading, spacing: 0) {
+                                                Text("\(geniusSong?.title ?? "?") \(Text("by").foregroundStyle(Color.Labels.secondary)) \(geniusSong?.artists ?? "?")")
+                                                    .font(.footnote)
+                                                
+                                                Text("Info found from Genius")
+                                            }
+                                            .fontWeight(.bold)
+                                            
+                                            Text("Artwork, song language, and credits")
+                                                .font(.subheadline)
+                                                .foregroundStyle(Color.Labels.secondary)
+                                        }
+                                    }
+                                }
+                                .padding()
+                                .transition(
+                                    .scale(scale: 0.8)
+                                    .combined(with: .opacity)
+                                )
+                            } else {
+                                Text("HULLO ???")
+                            }
+                        }
+                        .frame(minHeight: 22)
+                    }
+                    
                     VStack(spacing: 1) {
                         HStack(spacing: 4) {
                             //                            Text("Explicit")
@@ -167,26 +237,6 @@ struct EditSongView: View {
             .toolbarTitleDisplayMode(.inline)
             .transition(.offset(x: -100).combined(with: .opacity).animation(.snappy(duration: 0.2)))
         }
-    }
-}
-
-func searchGenius(_ query: String) async throws {
-    guard let url = URL(string: "https://api.genius.com/search?q=\(query)") else { return }
-    
-    var request = URLRequest(url: url)
-    request.httpMethod = "GET"
-    
-    request.setValue("Bearer \(Secrets.geniusClientID)", forHTTPHeaderField: "Authorization")
-    
-    do {
-        let (data, _) = try await URLSession.shared.data(for: request)
-        
-        if let jsonString = String(data: data, encoding: .utf8) {
-            print(jsonString)
-            print("-------")
-        }
-    } catch {
-        print("Error: \(error)")
     }
 }
 
