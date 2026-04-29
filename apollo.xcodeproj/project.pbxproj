@@ -6,6 +6,10 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		6ADE88EC2FA1A5CC00D1AF87 /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADE88EB2FA1A5CC00D1AF87 /* Glur */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		6AE65C5A2F94013B00DB1C24 /* apollo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = apollo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -36,6 +40,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6ADE88EC2FA1A5CC00D1AF87 /* Glur in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,6 +83,7 @@
 			);
 			name = apollo;
 			packageProductDependencies = (
+				6ADE88EB2FA1A5CC00D1AF87 /* Glur */,
 			);
 			productName = apollo;
 			productReference = 6AE65C5A2F94013B00DB1C24 /* apollo.app */;
@@ -107,6 +113,9 @@
 			);
 			mainGroup = 6AE65C512F94013B00DB1C24;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				6ADE88EA2FA1A5CC00D1AF87 /* XCRemoteSwiftPackageReference "Glur" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6AE65C5B2F94013B00DB1C24 /* Products */;
 			projectDirPath = "";
@@ -351,6 +360,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		6ADE88EA2FA1A5CC00D1AF87 /* XCRemoteSwiftPackageReference "Glur" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/joogps/Glur";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.1.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		6ADE88EB2FA1A5CC00D1AF87 /* Glur */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6ADE88EA2FA1A5CC00D1AF87 /* XCRemoteSwiftPackageReference "Glur" */;
+			productName = Glur;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 6AE65C522F94013B00DB1C24 /* Project object */;
 }

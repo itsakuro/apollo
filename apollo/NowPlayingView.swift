@@ -7,6 +7,7 @@
 
 import SwiftUI
 import MediaPlayer
+import Glur
 
 struct NowPlayingView: View {
     @State private var playback = PlaybackManager.shared
@@ -25,48 +26,66 @@ struct NowPlayingView: View {
                     .resizable()
                     .scaledToFill()
                     .ignoresSafeArea()
-                    .blur(radius: 100)
+                    .blur(radius: 300)
                     .opacity(0.6)
+                    .frame(width: artworkWidth)
             }
             
             GeometryReader { geometry in
                 VStack(spacing: 28) {
-                    Group {
-                        if let data = playback.currentSong?.artworkData, let image = UIImage(data: data) {
-                            Image(uiImage: image)
-                                .resizable()
-                                .scaledToFit()
-                        } else {
-                            RoundedRectangle(cornerRadius: 36)
-                                .fill(Color.Backgrounds.secondary)
-                                .overlay {
-                                    Image(ImageResource.Bubbly.musicNoteBeamed)
-                                        .resizable()
-                                        .aspectRatio(contentMode: .fit)
-                                        .foregroundStyle(Color.Labels.secondary.opacity(0.05))
-                                        .frame(width: 96, height: 96)
-                                }
+                    VStack(spacing: 0) {
+                        Capsule()
+                            .fill(playback.currentSong != nil ? .white.opacity(0.15) : Color.Backgrounds.secondary)
+                            .blendMode(.plusLighter)
+                            .frame(width: 60, height: 6)
+                            .padding(.top, 8)
+                            .padding(.bottom, 20)
+                        
+                        Group {
+                            if let data = playback.currentSong?.artworkData, let image = UIImage(data: data) {
+                                Image(uiImage: image)
+                                    .resizable()
+                                    .scaledToFit()
+                            } else {
+                                Rectangle()
+                                    .fill(Color.Backgrounds.secondary)
+                                    .overlay {
+                                        Image(ImageResource.Bubbly.musicNoteBeamed)
+                                            .resizable()
+                                            .aspectRatio(contentMode: .fit)
+                                            .foregroundStyle(Color.Labels.secondary.opacity(0.05))
+                                            .frame(width: 128, height: 128)
+                                    }
+                            }
                         }
+                        .frame(width: artworkWidth, height: artworkWidth)
+                        .onAppear {
+                            artworkWidth = geometry.size.width
+                        }
+                        .onChange(of: geometry.size.width) { oldValue, newValue in                        artworkWidth = newValue
+                        }
+                        .clipShape(.rect(cornerRadius: 26))
+//                        .scaleEffect(playback.isPlaying ? 1 : 0.8)
+                        .animation(.spring(duration: 0.6, bounce: 0.4), value: playback.isPlaying)
                     }
-                    .frame(width: artworkWidth, height: artworkWidth)
-                    .onAppear {
-                        artworkWidth = geometry.size.width
-                    }
-                    .onChange(of: geometry.size.width) { oldValue, newValue in
-                        artworkWidth = newValue
-                    }
-                    .clipShape(.rect(cornerRadius: 36))
-                    .scaleEffect(playback.isPlaying ? 1 : 0.8)
-                    .animation(.spring(duration: 0.6, bounce: 0.4), value: playback.isPlaying)
                     
                     HStack(spacing: 4) {
                         VStack(alignment: .leading, spacing: 0) {
-                            Text(playback.currentSong?.title ?? "Not Playing")
-                                .font(.title2)
-                                .fontWeight(.bold)
+                            HStack(spacing: 4) {
+                                Text(playback.currentSong?.title ?? "Not Playing")
+                                
+                                if playback.currentSong?.isExplicit == true {
+                                    Image(systemName: "e.square.fill")
+                                        .opacity(0.5)
+                                        .blendMode(.plusLighter)
+                                }
+                            }
+                            .fontWeight(.bold)
+                            
                             Text(playback.currentSong?.artists.joined(separator: "; ") ?? "On this device")
                                 .foregroundStyle(Color.Labels.secondary)
                         }
+                        .font(.title3)
                         .lineLimit(1)
                         .frame(maxWidth: .infinity, alignment: .leading)
                         
@@ -75,10 +94,11 @@ struct NowPlayingView: View {
                                 playback.isFavorited.toggle()
                             }
                         } label: {
-                            Image(systemName: "heart")
-                                .font(.title2)
-                                .foregroundStyle(playback.isFavorited ? .accent : Color.Labels.secondary.opacity(0.5))
-                                .symbolEffect(.bounce, value: playback.isFavorited)
+                            Image(systemName: playback.isFavorited ? "heart.circle.fill" : "heart.fill")
+                                .font(.title)
+                                .foregroundStyle(playback.isFavorited ? .pink : Color.Labels.secondary.opacity(0.5))
+//                                .symbolEffect(.bounce, value: playback.isFavorited)
+                                .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp)))
                         }
                         .buttonStyle(.plain)
                     }
@@ -121,7 +141,6 @@ struct NowPlayingView: View {
                         } label:{
                             Image(systemName: "backward.fill")
                                 .font(.title)
-                                .imageScale(.large)
                                 .frame(width: 72, height: 72)
                                 .contentShape(.circle)
                         }
@@ -144,7 +163,6 @@ struct NowPlayingView: View {
                         } label:{
                             Image(systemName: "forward.fill")
                                 .font(.title)
-                                .imageScale(.large)
                                 .frame(width: 72, height: 72)
                                 .contentShape(.circle)
                         }
@@ -174,7 +192,7 @@ struct NowPlayingView: View {
         }
         .fontWeight(.medium)
         .fontDesign(.rounded)
-        .foregroundStyle(Color.Labels.primary)
+        .foregroundStyle(.white)
     }
     
     func formatTime(_ seconds: Double) -> String {

@@ -106,7 +106,7 @@ class PlaybackManager {
         guard let song = currentSong else { return }
         
         var info: [String: Any] = [
-            MPMediaItemPropertyTitle: song.title,
+            MPMediaItemPropertyTitle: song.isExplicit ? "\(song.title) 🅴" : song.title,
             MPMediaItemPropertyArtist: song.artists.joined(separator: "; "),
             MPNowPlayingInfoPropertyElapsedPlaybackTime: currentTime,
             MPMediaItemPropertyPlaybackDuration: duration,

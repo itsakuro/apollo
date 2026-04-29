@@ -7,6 +7,7 @@
 
 import SwiftUI
 import AVFoundation
+import SwiftData
 
 enum SongField {
     case title, artists
@@ -24,6 +25,7 @@ struct SongMetadata {
 
 struct AddSongView: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) private var modelContext
     
     // Upload
     
@@ -346,7 +348,8 @@ struct AddSongView: View {
             fileBookmark: bookmark
         )
         
-        LibraryStore.shared.add(song)
+        modelContext.insert(song)
+        try? modelContext.save()
     }
 }
 

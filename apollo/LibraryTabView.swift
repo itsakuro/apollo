@@ -6,10 +6,16 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct LibraryTabView: View {
-    @State private var library = LibraryStore.shared
+    @Query private var songs: [Song]
+    @Environment(\.modelContext) private var modelContext
+    
+//    @State private var library = LibraryStore.shared
     @State private var showingAddSongSheet: Bool = false
+    
+    @Binding var showNowPlaying: Bool
     
 //    @State private var showingAddNew: Bool = false
 //    @State private var showingAddSource: Bool = false
@@ -20,7 +26,7 @@ struct LibraryTabView: View {
             ZStack {
                 Color.Lists.background.ignoresSafeArea()
                 
-                if library.songs.isEmpty {
+                if songs.isEmpty {
                     VStack(spacing: 0) {
                         Text("Your library’s a little empty")
                             .fontWeight(.bold)
@@ -32,7 +38,7 @@ struct LibraryTabView: View {
                 } else {
                     ScrollView {
                         VStack(spacing: 1) {
-                            ForEach(library.songs) { song in
+                            ForEach(songs) { song in
                                 HStack(spacing: 12) {
                                     Group {
                                         if let data = song.artworkData,
@@ -105,6 +111,9 @@ struct LibraryTabView: View {
                     }
                 }
             }
+            .sheet(isPresented: $showNowPlaying, content: {
+                NowPlayingView()
+            })
             .fontWeight(.medium)
             .fontDesign(.rounded)
             .foregroundStyle(Color.Labels.primary)
@@ -141,5 +150,5 @@ struct LibraryTabView: View {
 }
 
 #Preview {
-    LibraryTabView()
+    LibraryTabView(showNowPlaying: .constant(false))
 }

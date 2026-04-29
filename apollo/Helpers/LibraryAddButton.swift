@@ -98,7 +98,3 @@ struct LibraryAddButton<Label: View, Content: View, ExpandedContent: View>: View
         }
     }
 }
-
-#Preview {
-    LibraryTabView()
-}

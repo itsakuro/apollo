@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @Observable
 class LibraryStore {
@@ -17,17 +18,18 @@ class LibraryStore {
     }
 }
 
-struct Song: Identifiable {
-    let id: UUID = UUID()
+@Model
+class Song {
     var title: String
     var artists: [String]
     var isExplicit: Bool = false
     var artworkData: Data? = nil
     var lyrics: String? = nil
     var trackNumber: Int? = nil
-    var credits: [Credit] = []
-    var projectID: UUID? = nil // foreign key
     var fileBookmark: Data? = nil
+    
+    var project: Project? = nil
+    var credits: [Credit] = []
     
     var fileURL: URL? {
         guard let bookmark = fileBookmark else { return nil }
@@ -47,25 +49,42 @@ struct Song: Identifiable {
     }
 }
 
-struct Project: Identifiable {
-    let id: UUID = UUID()
+@Model
+class Project {
     var title: String
     var type: ProjectType
-    var artwork: Image? = nil
+    var artworkData: Data? = nil
     var releaseDate: Date? = nil
+    @Relationship(deleteRule: .nullify, inverse: \Song.project)
+    var songs: [Song] = []
+    
+    init(title: String, type: ProjectType, artworkData: Data? = nil, releaseDate: Date? = nil, songs: [Song]) {
+        self.title = title
+        self.type = type
+//        self.artworkData = artworkData
+//        self.releaseDate = releaseDate
+//        self.songs = songs
+    }
 }
 
-enum ProjectType {
+@Model
+class Credit {
+    var name: String
+    var role: CreditRole
+    var song: Song?
+    
+    init(name: String, role: CreditRole, song: Song? = nil) {
+        self.name = name
+        self.role = role
+//        self.song = song
+    }
+}
+
+enum ProjectType: Codable {
     case album, ep, single
 }
 
-struct Credit: Identifiable {
-    let id: UUID = UUID()
-    var name: String
-    var role: CreditRole
-}
-
-enum CreditRole {
+enum CreditRole: Codable {
     case performer, songwriter, producer, feature
 }
 
@@ -75,15 +94,22 @@ enum Tabs: Equatable, Hashable {
 
 struct ContentView: View {
     @State private var selectedTab: Tabs = .library
+    @State private var showNowPlaying: Bool = false
     
     var body: some View {
         TabView(selection: $selectedTab) {
             Tab("Library", systemImage: "square.grid.2x2", value: .library) {
-                LibraryTabView()
+                LibraryTabView(showNowPlaying: $showNowPlaying)
             }
             Tab("Search", systemImage: "magnifyingglass", value: .search, role: .search) {
                 Text("Search tab")
             }
+        }
+        .tabViewBottomAccessory {
+            MiniPlayerView()
+                .onTapGesture {
+                    showNowPlaying = true
+                }
         }
     }
 }

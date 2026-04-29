@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct apolloApp: App {
@@ -14,5 +15,6 @@ struct apolloApp: App {
 //            AddSongView()
             ContentView()
         }
+        .modelContainer(for: [Song.self, Project.self, Credit.self])
     }
 }
