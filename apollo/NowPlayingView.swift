@@ -16,6 +16,19 @@ struct NowPlayingView: View {
     @State private var scrubTime: Double = 0.0
     
     @State private var artworkWidth: CGFloat = .zero
+    
+    @State private var showingLyrics: Bool = false
+    var parsedLines: [LRCLine]? {
+        guard let lyrics = playback.currentSong?.lyrics else { return nil }
+        switch lyrics {
+        case .ttml(let raw):
+            return nil
+        case .lrc(let raw):
+            return parseLRC(raw)
+        case .raw(let raw):
+            return nil
+        }
+    }
 
     var body: some View {
         ZStack {
@@ -186,6 +199,22 @@ struct NowPlayingView: View {
                         .font(.caption)
                         .foregroundStyle(Color.Labels.secondary)
                     }
+                    
+                    Button {
+                        withAnimation(.spring(duration: 0.4, bounce: 0.2)) {
+                            showingLyrics.toggle()
+                        }
+                    } label: {
+                        Image(ImageResource.Bubbly.quoteBubbleFill)
+                            .foregroundStyle(showingLyrics ? Color.Labels.primary : Color.Labels.secondary)
+                    }
+                }
+                
+                if showingLyrics, let lines = parsedLines {
+                    LyricsView(showingLyrics: $showingLyrics, lines: lines)
+                        .background(.ultraThinMaterial)
+                        .clipShape(.rect(cornerRadius: 28))
+                        .transition(.move(edge: .bottom).combined(with: .opacity))
                 }
             }
             .padding(.horizontal, 24)
@@ -199,6 +228,71 @@ struct NowPlayingView: View {
         guard seconds.isFinite else { return "0:00" }
         let s = Int(seconds)
         return "\(s / 60):\(String(format: "%02d", s % 60))"
+    }
+}
+
+struct LyricsView: View {
+    @Binding var showingLyrics: Bool
+    
+    let lines: [LRCLine]
+    @State private var playback = PlaybackManager.shared
+    
+    @State private var currentLineIndex: Int? = nil
+    
+    var body: some View {
+        NavigationStack {
+            ScrollViewReader { proxy in
+                ScrollView {
+                    LazyVStack(spacing: 16) {
+                        // top padding
+                        Color.clear
+                            .frame(height: 72)
+                        
+                        ForEach(Array(lines.enumerated()), id: \.element.id) { index, line in
+                            Text(line.lyric)
+                                .font(.largeTitle)
+                                .fontWeight(.bold)
+                                .opacity(index == currentLineIndex ? 1 : 0.5)
+                                .scaleEffect(index == currentLineIndex ? 1 : 0.96, anchor: .leading)
+                                .frame(maxWidth: .infinity, alignment: .leading)
+                                .id(index)
+                                .contentShape(.rect)
+                                .onTapGesture {
+                                    playback.seek(to: line.timestamp)
+                                }
+                                .animation(.spring(duration: 0.4, bounce: 0.2), value: index == currentLineIndex)
+                        }
+                        
+                        // bottom padding
+                        Color.clear
+                            .frame(height: 72)
+                    }
+                }
+                .onChange(of: playback.currentTime, { _, _ in
+                    let newIndex = lines.indices.last { lines[$0].timestamp <= playback.currentTime }
+                    if newIndex != currentLineIndex {
+                        currentLineIndex = newIndex
+                    }
+                })
+                .onChange(of: currentLineIndex) { _, newIndex in
+                    guard let newIndex else { return }
+                    withAnimation(.spring(duration: 0.4, bounce: 0.2)) {
+                        proxy.scrollTo(newIndex, anchor: .center)
+                    }
+                }
+            }
+            .toolbar {
+                ToolbarItem(placement: .topBarLeading) {
+                    Button {
+                        showingLyrics = false
+                    } label: {
+                        Label("Close", systemImage: "xmark")
+                    }
+                }
+            }
+            .fontDesign(.rounded)
+            .foregroundStyle(.white)
+        }
     }
 }
 

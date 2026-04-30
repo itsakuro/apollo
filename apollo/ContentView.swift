@@ -24,7 +24,7 @@ class Song {
     var artists: [String]
     var isExplicit: Bool = false
     var artworkData: Data? = nil
-    var lyrics: String? = nil
+    var lyrics: Lyrics? = nil
     var trackNumber: Int? = nil
     var fileBookmark: Data? = nil
     
@@ -40,11 +40,12 @@ class Song {
         )
     }
     
-    init(title: String, artists: [String], isExplicit: Bool = false, artworkData: Data? = nil, fileBookmark: Data? = nil) {
+    init(title: String, artists: [String], isExplicit: Bool = false, artworkData: Data? = nil, lyrics: Lyrics? = nil, fileBookmark: Data? = nil) {
         self.title = title
         self.artists = artists
         self.isExplicit = isExplicit
         self.artworkData = artworkData
+        self.lyrics = lyrics
         self.fileBookmark = fileBookmark
     }
 }
@@ -87,6 +88,14 @@ enum ProjectType: Codable {
 enum CreditRole: Codable {
     case performer, songwriter, producer, feature
 }
+
+enum Lyrics: Codable {
+    case ttml(String)
+    case lrc(String)
+    case raw(String)
+}
+
+
 
 enum Tabs: Equatable, Hashable {
     case library, search

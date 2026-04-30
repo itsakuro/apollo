@@ -43,6 +43,8 @@ struct AddSongView: View {
     
     @State private var songIsExplicit: Bool = false
     
+    @State private var songLyrics: String = ""
+    
     let explicitTag = Text(Image(ImageResource.explicitTag)).baselineOffset(-3).foregroundStyle(Color.Labels.secondary)
 
     var body: some View {
@@ -183,17 +185,21 @@ struct AddSongView: View {
                                                 .tint(.mint)
                                                 .labelsHidden()
                                         }
-                                        ListRow {
-                                            Image(ImageResource.Bubbly.quoteBubbleFill)
-                                                .resizable()
-                                                .aspectRatio(contentMode: .fit)
-                                                .foregroundStyle(Color.Labels.secondary)
-                                                .frame(width: 24, height: 24)
-                                                .opacity(0.5)
-                                            
-                                            Text("Lyrics support coming soon")
-                                                .italic()
-                                                .foregroundStyle(Color.Labels.secondary)
+                                        NavigationLink {
+                                            EditLyricsView(lyrics: $songLyrics)
+                                        } label: {
+                                            ListRow {
+                                                Image(ImageResource.Bubbly.quoteBubbleFill)
+                                                    .resizable()
+                                                    .aspectRatio(contentMode: .fit)
+                                                    .foregroundStyle(Color.Labels.secondary)
+                                                    .frame(width: 24, height: 24)
+                                                    .opacity(0.5)
+                                                
+                                                Text("Lyrics support coming soon")
+                                                    .italic()
+                                                    .foregroundStyle(Color.Labels.secondary)
+                                            }
                                         }
                                     }
                                     .clipShape(.rect(cornerRadius: 26))
@@ -345,6 +351,7 @@ struct AddSongView: View {
             }.filter { !$0.isEmpty },
             isExplicit: songIsExplicit,
             artworkData: foundMetadata?.artworkData,
+            lyrics: .lrc(songLyrics),
             fileBookmark: bookmark
         )
         
