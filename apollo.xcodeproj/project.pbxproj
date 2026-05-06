@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		6A945A652FA66D590007BC0A /* Romanize in Frameworks */ = {isa = PBXBuildFile; productRef = 6A945A642FA66D590007BC0A /* Romanize */; };
 		6ADE88EC2FA1A5CC00D1AF87 /* Glur in Frameworks */ = {isa = PBXBuildFile; productRef = 6ADE88EB2FA1A5CC00D1AF87 /* Glur */; };
 /* End PBXBuildFile section */
 
@@ -41,6 +42,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				6ADE88EC2FA1A5CC00D1AF87 /* Glur in Frameworks */,
+				6A945A652FA66D590007BC0A /* Romanize in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -84,6 +86,7 @@
 			name = apollo;
 			packageProductDependencies = (
 				6ADE88EB2FA1A5CC00D1AF87 /* Glur */,
+				6A945A642FA66D590007BC0A /* Romanize */,
 			);
 			productName = apollo;
 			productReference = 6AE65C5A2F94013B00DB1C24 /* apollo.app */;
@@ -115,6 +118,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				6ADE88EA2FA1A5CC00D1AF87 /* XCRemoteSwiftPackageReference "Glur" */,
+				6A945A632FA66D590007BC0A /* XCRemoteSwiftPackageReference "romanize" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 6AE65C5B2F94013B00DB1C24 /* Products */;
@@ -362,6 +366,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		6A945A632FA66D590007BC0A /* XCRemoteSwiftPackageReference "romanize" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://gitlab.com/pdylong/romanize.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 1.2.6;
+			};
+		};
 		6ADE88EA2FA1A5CC00D1AF87 /* XCRemoteSwiftPackageReference "Glur" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/joogps/Glur";
@@ -373,6 +385,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		6A945A642FA66D590007BC0A /* Romanize */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 6A945A632FA66D590007BC0A /* XCRemoteSwiftPackageReference "romanize" */;
+			productName = Romanize;
+		};
 		6ADE88EB2FA1A5CC00D1AF87 /* Glur */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 6ADE88EA2FA1A5CC00D1AF87 /* XCRemoteSwiftPackageReference "Glur" */;

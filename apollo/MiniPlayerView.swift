@@ -11,7 +11,7 @@ struct MiniPlayerView: View {
     @State private var playback = PlaybackManager.shared
     
     var body: some View {
-        HStack(spacing: 4) {
+        HStack(spacing: 8) {
             Group {
                 if let data = playback.currentSong?.artworkData,
                    let image = UIImage(data: data) {
@@ -29,20 +29,23 @@ struct MiniPlayerView: View {
                         }
                 }
             }
-            .frame(width: 32, height: 32)
+            .frame(width: 30, height: 30)
             .clipShape(.rect(cornerRadius: 8))
             
             VStack(alignment: .leading, spacing: 0) {
-                HStack(spacing: 3) {
+                HStack(spacing: 2) {
                     Text(playback.currentSong?.title ?? "Not Playing")
                         .fontWeight(.bold)
                     
                     if playback.currentSong?.isExplicit == true {
-                        Image(systemName: "e.square.fill")
+                        Image(ImageResource.Bubbly.explicitFill)
+                            .resizable()
+                            .scaledToFit()
+                            .frame(width: 14, height: 14)
                             .foregroundStyle(Color.Labels.secondary)
                     }
                 }
-                .font(.subheadline)
+                .font(.footnote)
                 .fontWeight(.bold)
                 
                 Text(playback.currentSong?.artists.joined(separator: "; ") ?? "On this device")
@@ -52,26 +55,39 @@ struct MiniPlayerView: View {
             .frame(maxWidth: .infinity, alignment: .leading)
             .lineLimit(1)
             
-            HStack(spacing: 8) {
-                Button {
-                    playback.playPause()
-                } label: {
-                    Image(systemName: playback.isPlaying ? "pause.fill" : "play.fill")
-                        .imageScale(.large)
-                        .contentTransition(.symbolEffect(.replace.magic(fallback: .downUp)))
+            Button {
+                playback.playPause()
+            } label: {
+                Group {
+                    Image(playback.isPlaying ? ImageResource.Bubbly.pause : ImageResource.Bubbly.play)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 28, height: 28)
                 }
-                
-                Button {
-                    playback.forward()
-                } label: {
-                    Image(systemName: "forward.fill")
-                }
+                .frame(width: 32, height: 32)
             }
-            .padding(.horizontal)
+            
+            Button {
+                playback.forward()
+            } label: {
+                Group {
+                    Image(ImageResource.Bubbly.skipAlt)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 28, height: 28)
+                }
+                .frame(width: 32, height: 32)
+            }
         }
+        .padding(.leading)
+        .padding(.trailing, 12)
         .fontWeight(.medium)
         .fontDesign(.rounded)
         .foregroundStyle(Color.Labels.primary)
         .contentShape(.rect)
     }
+}
+
+#Preview {
+    MiniPlayerView()
 }

@@ -1,5 +1,5 @@
 {
-  "originHash" : "36ece777af2e1c0204ebe342a083c5b819ffeaa318585ae3e5d51c5424b43af4",
+  "originHash" : "b0f76b7526ff5e04b2b9f2d601d16193a39e55e686c90fb29cf9f7ed4518617d",
   "pins" : [
     {
       "identity" : "glur",
@@ -8,6 +8,15 @@
       "state" : {
         "revision" : "178af6499ed7957c7f91187fdee2b09d322f5b87",
         "version" : "1.1.0"
+      }
+    },
+    {
+      "identity" : "romanize",
+      "kind" : "remoteSourceControl",
+      "location" : "https://gitlab.com/pdylong/romanize.git",
+      "state" : {
+        "revision" : "76298cf1c3476aeee870994ec28ce4a9778a720c",
+        "version" : "1.2.6"
       }
     }
   ],
