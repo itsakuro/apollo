@@ -85,6 +85,19 @@ enum ProjectType: Codable {
     case album, ep, single
 }
 
+extension ProjectType {
+    var string: String {
+        switch self {
+        case .album:
+            return "Album"
+        case .ep:
+            return "EP"
+        case .single:
+            return "Single"
+        }
+    }
+}
+
 enum CreditRole: Codable {
     case performer, songwriter, producer, feature
 }
